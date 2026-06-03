@@ -14,8 +14,8 @@ import { useAlert } from "../../contexts/AlertContext";
 import { MatxLoading } from "../../components";
 
 import { fireStore } from "../../../config";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc, doc, updateDoc, getDoc } from "firebase/firestore";
+import { uploadFilesToLocalServer } from "../../utils/localUpload";
 
 // styled components
 const ContentWrapper = styled(Box)(({ theme }) => ({
@@ -54,7 +54,6 @@ const BasicInformation = () => {
 
   const theme = useTheme();
   const { showAlert } = useAlert();
-  const storage = getStorage();
   const userData = JSON.parse(localStorage.getItem("userData"));
 
   useEffect(() => {
@@ -116,31 +115,29 @@ const BasicInformation = () => {
   const updateUser = async (values) => {
     setLoading(true);
     try {
-      let downloadURL = ""; // Variable to store the download URL
-      console.log("file", file);
+      let profileImageUrl = data?.profileImage || "";
       // Upload the image if a new image is selected
       if (file) {
-        console.log("file enter", file);
-        const fileName = `profile_${userData.id}`;
-        const storageRef = ref(storage, "project-files/" + fileName);
-
-        // Define metadata to include the MIME type
-        const metadata = {
-          contentType: file.type // Automatically get the correct MIME type from the file object
-        };
-
-        // Upload the file with metadata
-        await uploadBytes(storageRef, file, metadata);
-        downloadURL = await getDownloadURL(storageRef); // Get the download URL
-        console.log("downloadURL", downloadURL);
+        const uploadedUrls = await uploadFilesToLocalServer([file], "profiles");
+        profileImageUrl = uploadedUrls[0] || "";
       }
 
       // Update document in Firestore
-      const projectRef = doc(fireStore, "users", userData.id); // Assuming you have the ID of the user to update
+      const projectRef = doc(fireStore, "users", userData.id);
       await updateDoc(projectRef, {
-        ...values, // Include existing values from the form
-        profileImage: downloadURL || "" // Update the profile image field
+        ...values,
+        profileImage: profileImageUrl
       });
+
+      // Update localStorage with the new profile image URL
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({
+          ...userData,
+          ...values,
+          profileImage: profileImageUrl
+        })
+      );
 
       setLoading(false);
       showAlert("success", "User data updated successfully!");

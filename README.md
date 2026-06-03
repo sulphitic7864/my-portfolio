@@ -180,3 +180,54 @@ Your app is ready to be deployed!</p>
 Download From <a href="https://ui-lib.com/downloads/matx-react-dashboard/">official website</a>
 
 <h3>For questions and support mail us at <a href="mailto:support@ui-lib.com">support@ui-lib.com</a></h3>
+
+<h2>Local upload deployment</h2>
+<p>This project supports two upload modes:</p>
+<ul>
+  <li><strong>Local upload server</strong> — a small Node/Express endpoint that saves files into <code>public/uploads</code>. Useful for local development or Node-capable hosting.</li>
+  <li><strong>Cloud storage (Cloudinary)</strong> — direct client uploads to Cloudinary so the frontend can remain fully static.</li>
+</ul>
+
+<h2>Cloudinary (fully static uploads)</h2>
+<p>If you want to keep the app static (no backend), Cloudinary is a good option. The project contains client-side Cloudinary support that uploads files directly from the browser using an unsigned upload preset.</p>
+
+<h3>Quick setup</h3>
+<ol>
+  <li>Create a Cloudinary account at <a href="https://cloudinary.com">cloudinary.com</a>.</li>
+  <li>Open the Dashboard and note your <strong>cloud name</strong>.</li>
+  <li>Go to <strong>Settings → Upload → Upload presets</strong> and create a new preset with <strong>Signing Mode</strong> set to <em>Unsigned</em>. Optionally configure allowed formats and max file size.</li>
+  <li>Create a `.env` file in the project root with these values (don't commit `.env`):
+    <pre>
+REACT_APP_USE_CLOUDINARY=true
+REACT_APP_CLOUDINARY_CLOUD_NAME=your-cloud-name
+REACT_APP_CLOUDINARY_UPLOAD_PRESET=your-unsigned-preset
+    </pre>
+  </li>
+  <li>Restart the dev server (`npm start`). The upload helper will detect Cloudinary and upload directly to Cloudinary, returning `secure_url`s which your app stores in Firestore.</li>
+</ol>
+
+<h3>How it works in this project</h3>
+<ul>
+  <li>The helper `src/app/utils/localUpload.js` checks environment variables and performs Cloudinary uploads when configured.</li>
+  <li>When Cloudinary is enabled, uploads are sent to <code>https://api.cloudinary.com/v1_1/&lt;cloud_name&gt;/auto/upload</code> with `upload_preset` and optional `folder`.</li>
+  <li>The helper returns the uploaded file URLs (Cloudinary `secure_url`) which are saved to Firestore by the UI code that calls the helper.</li>
+  <li>If Cloudinary is not enabled, the helper falls back to the local upload server at `/api/uploads` (or `http://localhost:5001/api/uploads` in development).</li>
+</ul>
+
+<h3>Test using curl</h3>
+<p>Replace placeholders and run from your machine:</p>
+<pre>
+curl -X POST "https://api.cloudinary.com/v1_1/your-cloud-name/auto/upload" \
+  -F "file=@/full/path/to/image.jpg" \
+  -F "upload_preset=your-unsigned-preset" \
+  -F "folder=myapp/profiles"
+</pre>
+
+<h3>Security notes</h3>
+<ul>
+  <li>Unsigned uploads are convenient but less restrictive. Limit the unsigned preset by allowed formats, max file size, and optionally enable request origin restrictions in Cloudinary.</li>
+  <li>For stronger security, implement signed uploads: the browser requests a signature from a server endpoint you control, then posts the signed request to Cloudinary.</li>
+</ul>
+
+<h3>Production</h3>
+<p>With Cloudinary, your frontend can be deployed as static files (Netlify, Vercel, S3, etc.) and still support file uploads from the browser. If you choose signed uploads, add a tiny server endpoint to generate signatures.</p>

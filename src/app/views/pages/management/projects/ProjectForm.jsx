@@ -11,9 +11,9 @@ import {
   TextField
 } from "@mui/material";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import "flatpickr/dist/themes/material_green.css";
 import { Formik } from "formik";
+import { uploadFilesToLocalServer } from "../../../../utils/localUpload";
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Flatpickr from "react-flatpickr";
@@ -60,7 +60,6 @@ const ProjectForm = (props) => {
     accept: { "image/*": [".jpg", ".png"] }
   });
   const { showAlert } = useAlert();
-  const storage = getStorage(); // Initialize Firebase Storage
   let formData = props?.updateData;
 
   const productSchema = yup.object().shape({
@@ -84,7 +83,6 @@ const ProjectForm = (props) => {
     technology: formData?.technology || "",
     images: formData?.images || [],
     project_duration: formData?.project_duration || [],
-    description: formData?.description || "",
     created_at: formData?.created_at || getIsoDate(),
     updated_at: getIsoDate()
   };
@@ -101,7 +99,7 @@ const ProjectForm = (props) => {
 
   const handleSubmit = async (values) => {
     values.project_duration = dateRange;
-    if (props?.action == "update") {
+    if (props?.action === "update") {
       updateProject(values);
     } else {
       addProject(values);
@@ -110,19 +108,10 @@ const ProjectForm = (props) => {
   const addProject = async (values) => {
     setLoading(true);
     try {
-      const downloadURLs = []; // Array to store download URLs of uploaded images
-      await Promise.all(
-        acceptedFiles.map(async (file) => {
-          const timestamp = Date.now();
-          const fileNameWithTimestamp = `project-files/${timestamp}_${file.name}`;
-          const storageRef = ref(storage, fileNameWithTimestamp);
-          await uploadBytes(storageRef, file);
-          const downloadURL = await getDownloadURL(storageRef); // Get download URL for the uploaded image and add it to the array
-          downloadURLs.push(downloadURL);
-        })
-      );
+      const downloadURLs = acceptedFiles?.length
+        ? await uploadFilesToLocalServer(acceptedFiles, "projects")
+        : [];
 
-      // Store image URLs and additional data in Firestore
       const preparedData = { ...values, images: downloadURLs };
       await addDoc(collection(fireStore, "projects"), preparedData);
       showAlert("success", "Project data added successfully!");
@@ -139,24 +128,14 @@ const ProjectForm = (props) => {
   const updateProject = async (values) => {
     setLoading(true);
     try {
-      const downloadURLs = []; // Array to store download URLs of uploaded images
-      // Upload images if new images are selected
-      if (acceptedFiles?.length) {
-        await Promise.all(
-          acceptedFiles.map(async (file) => {
-            const storageRef = ref(storage, "project-files/" + file.name);
-            await uploadBytes(storageRef, file);
-            const downloadURL = await getDownloadURL(storageRef); // Get download URL for the uploaded image and add it to the array
-            downloadURLs.push(downloadURL);
-          })
-        );
-      }
+      const downloadURLs = acceptedFiles?.length
+        ? await uploadFilesToLocalServer(acceptedFiles, "projects")
+        : [];
 
-      // Update document in Firestore
-      const projectRef = doc(fireStore, "projects", formData.id); // Assuming you have the ID of the project to update
+      const projectRef = doc(fireStore, "projects", formData.id);
       await updateDoc(projectRef, {
-        ...values, // Update existing values
-        images: downloadURLs.length ? downloadURLs : values.images // If new images are uploaded, update images with new URLs, otherwise keep existing images
+        ...values,
+        images: downloadURLs.length ? downloadURLs : values.images
       });
       setLoading(false);
       showAlert("success", "Project data updated successfully!");
@@ -174,7 +153,7 @@ const ProjectForm = (props) => {
       {loading && <MatxLoading />}
       <Card elevation={3}>
         <Box p={2} display="flex">
-          <H4>{props?.action == "update" ? "Update Project" : "Add New Project"}</H4>
+          <H4>{props?.action === "update" ? "Update Project" : "Add New Project"}</H4>
         </Box>
         <Divider sx={{ mb: 3 }} />
 

@@ -27,7 +27,8 @@ const IMG = styled("img")({
   minHeight: "150px",
   maxHeight: "200px",
   display: "block",
-  boxSizing: "content-box"
+  boxSizing: "content-box",
+  cursor: "pointer"
 });
 
 const CardRoot = styled(Card)(({ theme }) => ({
@@ -106,7 +107,7 @@ const GridView = ({ list = [], sliderValue }) => {
             <Grid item key={item.id} sm={calculateColumnPerRow(sliderValue)}>
               <CardRoot sx={{ boxSizing: "border-box" }} elevation={6}>
                 <Box className="grid__card-top">
-                  <IMG src={item?.images[0]} alt={item?.name} />
+                  <IMG src={item?.images?.[0]} alt={item?.name} />
 
                   <Box className="grid__card-overlay">
                     <FlexBetween>

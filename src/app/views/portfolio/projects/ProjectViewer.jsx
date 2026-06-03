@@ -1,9 +1,9 @@
-import { Card, Divider, Box, Link, Grid, a, Icon, styled, useTheme, Button } from "@mui/material";
+import { Card, Divider, Box, Link, Grid, Icon, styled, useTheme, Button } from "@mui/material";
 import { H4, H5, Paragraph, Span } from "../../../components/Typography";
 import { removeTimeFromDate } from "../../../utils/utils";
-import { useState } from "react";
-import InnerImageZoom from "react-inner-image-zoom";
-import "react-inner-image-zoom/lib/styles.min.css";
+import { useEffect, useState } from "react";
+import { Gallery, Item } from "react-photoswipe-gallery";
+import "photoswipe/style.css";
 
 // styled components
 const Container = styled("div")(({ theme }) => ({
@@ -48,7 +48,6 @@ const ThumbImg = styled("img")({
 });
 
 const ProductViewer = (props) => {
-  const [selectedImage, setSelectedImage] = useState(props?.data?.images[0] ?? "");
   const projectData = props.data;
 
   const theme = useTheme();
@@ -62,32 +61,36 @@ const ProductViewer = (props) => {
         <Grid container spacing={3}>
           <Grid item md={6} xs={12}>
             <ProductCard className="ProductCard">
-              {/* <IMG src={selectedImage} className="zoom-img" alt={selectedImage} /> */}
-              <InnerImageZoom
-                className="ProductImage"
-                src={selectedImage}
-                zoomSrc={selectedImage}
-                zoomType="hover"
-                zoomPreload={true}
-                zoomScale={0.5}
-              />
+              {/* Only show thumbnails; clicking will open PhotoSwipe modal */}
+              <Gallery>
+                <FlexAlignCenter
+                  className="border"
+                  style={{ width: "-webkit-fill-available" }}
+                  gap={2}
+                  py={2}
+                >
+                  {projectData?.images?.map((imgUrl, idx) => (
+                    <Item
+                      key={`thumb-${projectData?.id}-${idx}`}
+                      original={imgUrl}
+                      thumbnail={imgUrl}
+                      width="1200"
+                      height="900"
+                      title={projectData?.name}
+                    >
+                      {({ ref, open }) => (
+                        <ThumbImg
+                          ref={ref}
+                          src={imgUrl}
+                          alt={imgUrl}
+                          onClick={() => open()}
+                        />
+                      )}
+                    </Item>
+                  ))}
+                </FlexAlignCenter>
+              </Gallery>
             </ProductCard>
-            <FlexAlignCenter
-              className="border"
-              style={{ width: "-webkit-fill-available" }}
-              gap={2}
-              py={2}
-            >
-              {projectData?.images?.map((imgUrl) => (
-                <ThumbImg
-                  src={imgUrl}
-                  alt={imgUrl}
-                  key={imgUrl}
-                  url={imgUrl}
-                  onClick={() => setSelectedImage(imgUrl)}
-                />
-              ))}
-            </FlexAlignCenter>
           </Grid>
 
           <Grid item md={6} xs={12}>

@@ -11,9 +11,9 @@ import {
   TextField
 } from "@mui/material";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import "flatpickr/dist/themes/material_green.css";
 import { Formik } from "formik";
+import { uploadFilesToLocalServer } from "../../../../utils/localUpload";
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Flatpickr from "react-flatpickr";
@@ -61,7 +61,6 @@ const ProjectForm = (props) => {
     maxFiles: 1
   });
   const { showAlert } = useAlert();
-  const storage = getStorage(); // Initialize Firebase Storage
   let formData = props?.updateData;
 
   console.log("formData", formData);
@@ -112,17 +111,9 @@ const ProjectForm = (props) => {
   const addReview = async (values) => {
     setLoading(true);
     try {
-      const downloadURLs = []; // Array to store download URLs of uploaded images
-      await Promise.all(
-        acceptedFiles.map(async (file) => {
-          const timestamp = Date.now();
-          const fileNameWithTimestamp = `project-files/${timestamp}_${file.name}`;
-          const storageRef = ref(storage, fileNameWithTimestamp);
-          await uploadBytes(storageRef, file);
-          const downloadURL = await getDownloadURL(storageRef); // Get download URL for the uploaded image and add it to the array
-          downloadURLs.push(downloadURL);
-        })
-      );
+      const downloadURLs = acceptedFiles?.length
+        ? await uploadFilesToLocalServer(acceptedFiles, "reviews")
+        : [];
 
       const preparedData = { ...values, image: downloadURLs[0] ?? values.live_url };
       await addDoc(collection(fireStore, "reviews"), preparedData);
@@ -140,23 +131,13 @@ const ProjectForm = (props) => {
   const updateReview = async (values) => {
     setLoading(true);
     try {
-      const downloadURLs = []; // Array to store download URLs of uploaded images
-      // Upload images if new images are selected
-      if (acceptedFiles?.length) {
-        await Promise.all(
-          acceptedFiles.map(async (file) => {
-            const storageRef = ref(storage, "project-files/" + file.name);
-            await uploadBytes(storageRef, file);
-            const downloadURL = await getDownloadURL(storageRef); // Get download URL for the uploaded image and add it to the array
-            downloadURLs.push(downloadURL);
-          })
-        );
-      }
+      const downloadURLs = acceptedFiles?.length
+        ? await uploadFilesToLocalServer(acceptedFiles, "reviews")
+        : [];
 
-      // Update document in Firestore
-      const projectRef = doc(fireStore, "reviews", formData.id); // Assuming you have the ID of the project to update
+      const projectRef = doc(fireStore, "reviews", formData.id);
       await updateDoc(projectRef, {
-        ...values, // Update existing values
+        ...values,
         image: downloadURLs[0] ?? values.live_url
       });
       setLoading(false);

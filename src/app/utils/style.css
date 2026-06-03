@@ -33,9 +33,7 @@ h6 {
   font-family: "Raleway", sans-serif;
 }
 
-.ProductCard:hover {
-  width: 70vw;
-}
+/* Removed hover rule that stretched product card to full width */
 
 /*--------------------------------------------------------------
 # Preloader
