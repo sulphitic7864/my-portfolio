@@ -3,6 +3,8 @@ import { AddToCartButton, Breadcrumb } from "../../../../components";
 import { H4, H5, Paragraph, Span } from "../../../../components/Typography";
 import { removeTimeFromDate } from "../../../../utils/utils";
 import { useState } from "react";
+import { Gallery, Item } from "react-photoswipe-gallery";
+import "photoswipe/style.css";
 import { FlexBetween } from "../../../../components/FlexBox";
 
 // styled components
@@ -46,7 +48,6 @@ const ThumbImg = styled("img")({
 });
 
 const ProductViewer = (props) => {
-  const [selectedImage, setSelectedImage] = useState(props?.data?.images[0] ?? "");
   const projectData = props.data;
 
   const theme = useTheme();
@@ -61,24 +62,30 @@ const ProductViewer = (props) => {
         <Grid container spacing={3}>
           <Grid item md={6} xs={12}>
             <ProductCard>
-              <IMG src={selectedImage} alt="laptop" />
-
-              <FlexAlignCenter
-                className="border"
-                style={{ width: "-webkit-fill-available" }}
-                gap={2}
-                py={2}
-              >
-                {projectData?.images?.map((imgUrl) => (
-                  <ThumbImg
-                    src={imgUrl}
-                    alt="laptop"
-                    key={imgUrl}
-                    url={imgUrl}
-                    onClick={() => setSelectedImage(imgUrl)}
-                  />
-                ))}
-              </FlexAlignCenter>
+              {/* thumbnails only; open PhotoSwipe modal on click */}
+              <Gallery>
+                <FlexAlignCenter
+                  className="border"
+                  style={{ width: "-webkit-fill-available" }}
+                  gap={2}
+                  py={2}
+                >
+                  {projectData?.images?.map((imgUrl, idx) => (
+                    <Item
+                      key={`thumb-mgmt-${projectData?.id}-${idx}`}
+                      original={imgUrl}
+                      thumbnail={imgUrl}
+                      width="1200"
+                      height="900"
+                      title={projectData?.name}
+                    >
+                      {({ ref, open }) => (
+                        <ThumbImg ref={ref} src={imgUrl} alt={projectData?.name} onClick={() => open()} />
+                      )}
+                    </Item>
+                  ))}
+                </FlexAlignCenter>
+              </Gallery>
             </ProductCard>
           </Grid>
 
