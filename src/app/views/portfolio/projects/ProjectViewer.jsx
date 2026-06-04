@@ -15,7 +15,7 @@ const Container = styled("div")(({ theme }) => ({
 const FlexAlignCenter = styled(Box)({
   display: "flex",
   alignItems: "center",
-  justifyContent: "center",
+  justifyContent: "left",
   overflowX: "scroll"
 });
 
@@ -59,41 +59,8 @@ const ProductViewer = (props) => {
     <Container>
       <Card sx={{ px: 4, pb: 2, pt: 4 }} elevation={3}>
         <Grid container spacing={3}>
-          <Grid item md={6} xs={12}>
-            <ProductCard className="ProductCard">
-              {/* Only show thumbnails; clicking will open PhotoSwipe modal */}
-              <Gallery>
-                <FlexAlignCenter
-                  className="border"
-                  style={{ width: "-webkit-fill-available" }}
-                  gap={2}
-                  py={2}
-                >
-                  {projectData?.images?.map((imgUrl, idx) => (
-                    <Item
-                      key={`thumb-${projectData?.id}-${idx}`}
-                      original={imgUrl}
-                      thumbnail={imgUrl}
-                      width="1200"
-                      height="900"
-                      title={projectData?.name}
-                    >
-                      {({ ref, open }) => (
-                        <ThumbImg
-                          ref={ref}
-                          src={imgUrl}
-                          alt={imgUrl}
-                          onClick={() => open()}
-                        />
-                      )}
-                    </Item>
-                  ))}
-                </FlexAlignCenter>
-              </Gallery>
-            </ProductCard>
-          </Grid>
-
-          <Grid item md={6} xs={12}>
+          
+          <Grid item md={12} xs={12} sx={{ order: { xs: 1, md: 1 } }}>
             <H4 sx={{ mt: 0, color: secondary, fontWeight: 700 }}>{projectData?.name}</H4>
             <Paragraph sx={{ mt: 0, mb: 2, color: secondary, fontSize: 12 }}>
               {removeTimeFromDate(projectData?.project_duration[0] ?? "-")} ||{" "}
@@ -160,6 +127,41 @@ const ProductViewer = (props) => {
             </CallBox>
             <Divider sx={{ mb: 2 }} />
           </Grid>
+
+          <Grid item md={12} xs={12} sx={{ order: { xs: 2, md: 2 } }}>
+            <ProductCard className="ProductCard">
+              {/* Only show thumbnails; clicking will open PhotoSwipe modal */}
+              <Gallery>
+                <FlexAlignCenter
+                  className="border"
+                  style={{ width: "-webkit-fill-available" }}
+                  gap={2}
+                  py={2}
+                >
+                  {projectData?.images?.map((imgUrl, idx) => (
+                    <Item
+                      key={`thumb-${projectData?.id}-${idx}`}
+                      original={imgUrl}
+                      thumbnail={imgUrl}
+                      width="1200"
+                      height="900"
+                      title={projectData?.name}
+                    >
+                      {({ ref, open }) => (
+                        <ThumbImg
+                          ref={ref}
+                          src={imgUrl}
+                          alt={imgUrl}
+                          onClick={() => open()}
+                        />
+                      )}
+                    </Item>
+                  ))}
+                </FlexAlignCenter>
+              </Gallery>
+            </ProductCard>
+          </Grid>
+
           <Grid item md={12} xs={12} sx={{ textAlign: "justify" }}>
             <H4
               sx={{
@@ -179,17 +181,18 @@ const ProductViewer = (props) => {
           </Grid>
         </Grid>
         <Divider sx={{ my: 2 }} />
-        <Button
-          type="submit"
-          color="primary"
-          variant="contained"
-          justifyContent="end"
-          sx={{ mb: 0, px: 6 }}
-          style={{ float: "right" }}
-          onClick={() => props.back()}
-        >
-          Back
-        </Button>
+        <Box sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 1 }}>
+          <Button
+            type="button"
+            color="primary"
+            variant="contained"
+            size="small"
+            sx={{ flex: { xs: "0 0 48%", md: "0 0 auto" }, px: { xs: 2, md: 6 }, py: { xs: 0.75, md: 1.5 } }}
+            onClick={() => props.back()}
+          >
+            Back
+          </Button>
+        </Box>
       </Card>
     </Container>
   );

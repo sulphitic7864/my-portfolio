@@ -17,7 +17,7 @@ const Container = styled("div")(({ theme }) => ({
 const FlexAlignCenter = styled(Box)({
   display: "flex",
   alignItems: "center",
-  justifyContent: "center",
+  justifyContent: "left",
   overflowX: "scroll"
 });
 
@@ -60,36 +60,8 @@ const ProductViewer = (props) => {
       {console.log("projectData", projectData)}
       <Card sx={{ px: 4, pb: 2, pt: 4 }} elevation={3}>
         <Grid container spacing={3}>
-          <Grid item md={6} xs={12}>
-            <ProductCard>
-              {/* thumbnails only; open PhotoSwipe modal on click */}
-              <Gallery>
-                <FlexAlignCenter
-                  className="border"
-                  style={{ width: "-webkit-fill-available" }}
-                  gap={2}
-                  py={2}
-                >
-                  {projectData?.images?.map((imgUrl, idx) => (
-                    <Item
-                      key={`thumb-mgmt-${projectData?.id}-${idx}`}
-                      original={imgUrl}
-                      thumbnail={imgUrl}
-                      width="1200"
-                      height="900"
-                      title={projectData?.name}
-                    >
-                      {({ ref, open }) => (
-                        <ThumbImg ref={ref} src={imgUrl} alt={projectData?.name} onClick={() => open()} />
-                      )}
-                    </Item>
-                  ))}
-                </FlexAlignCenter>
-              </Gallery>
-            </ProductCard>
-          </Grid>
-
-          <Grid item md={6} xs={12}>
+          
+          <Grid item md={12} xs={12} sx={{ order: { xs: 1, md: 1 } }}>
             <H4 sx={{ mt: 0, color: secondary, fontWeight: 700 }}>{projectData?.name}</H4>
             <Paragraph sx={{ mt: 0, mb: 2, color: secondary, fontSize: 12 }}>
               {removeTimeFromDate(projectData?.project_duration[0] ?? "-")} ||{" "}
@@ -157,7 +129,38 @@ const ProductViewer = (props) => {
             <Divider sx={{ mb: 2 }} />
           </Grid>
 
-          <Grid item md={12} xs={12}>
+          <Grid item md={12} xs={12} sx={{ order: { xs: 2, md: 2 } }}>
+            <H4 sx={{ mt: 0, color: secondary, fontWeight: 700 }}>Project Images</H4>
+            <ProductCard>
+              {/* thumbnails only; open PhotoSwipe modal on click */}
+              <Gallery>
+                <FlexAlignCenter
+                  className="border"
+                  style={{ width: "-webkit-fill-available" }}
+                  gap={1}
+                  py={2}
+                >
+                  {projectData?.images?.map((imgUrl, idx) => (
+                    <Item
+                      key={`thumb-mgmt-${projectData?.id}-${idx}`}
+                      original={imgUrl}
+                      thumbnail={imgUrl}
+                      width="1200"
+                      height="900"
+                      title={projectData?.name}
+                    >
+                      {({ ref, open }) => (
+                        <ThumbImg ref={ref} src={imgUrl} alt={projectData?.name} onClick={() => open()} />
+                      )}
+                    </Item>
+                  ))}
+                </FlexAlignCenter>
+              </Gallery>
+            </ProductCard>
+          </Grid>
+
+
+          <Grid item md={12} xs={12} sx={{ order: { xs: 3, md: 3 } }}>
             <H4 sx={{ ml: 0, mb: 1, fontSize: 16, fontWeight: "bold", color: secondary }}>
               Description
             </H4>
@@ -168,28 +171,29 @@ const ProductViewer = (props) => {
           </Grid>
         </Grid>
         <Divider sx={{ my: 2 }} />
-        <Button
-          type="submit"
-          color="success"
-          variant="contained"
-          justifyContent="end"
-          sx={{ mb: 0, px: 6 }}
-          onClick={() => props.updateProjectHandler(projectData)}
-        >
-          Edit
-        </Button>
+        <Box sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 1 }}>
+          <Button
+            type="button"
+            color="primary"
+            variant="contained"
+            size="small"
+            sx={{ flex: { xs: "0 0 48%", md: "0 0 auto" }, px: { xs: 2, md: 6 }, py: { xs: 0.75, md: 1.5 } }}
+            onClick={() => props.back()}
+          >
+            Back
+          </Button>
 
-        <Button
-          type="submit"
-          color="primary"
-          variant="contained"
-          justifyContent="end"
-          sx={{ mb: 0, px: 6 }}
-          style={{ float: "right" }}
-          onClick={() => props.back()}
-        >
-          Back
-        </Button>
+          <Button
+            type="button"
+            color="success"
+            variant="contained"
+            size="small"
+            sx={{ flex: { xs: "0 0 48%", md: "0 0 auto" }, px: { xs: 2, md: 6 }, py: { xs: 0.75, md: 1.5 } }}
+            onClick={() => props.updateProjectHandler(projectData)}
+          >
+            Edit
+          </Button>
+        </Box>
       </Card>
     </Container>
   );
