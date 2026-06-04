@@ -133,10 +133,10 @@ const UsersReviews = () => {
                     <Typography variant="body" color="info">
                       {testimonial?.date}
                     </Typography>
-                    <Typography sx={{ mt: 2 }}>
-                      <FormatQuoteIcon sx={{ fontSize: "15px" }} />
+                    <Typography sx={{ mt: 2, fontSize: "15px", fontStyle: "italic" }}>
+                      <FormatQuoteIcon sx={{ fontSize: "16px" }} />
                       {testimonial?.message}
-                      <FormatQuoteIcon sx={{ fontSize: "15px" }} />
+                      <FormatQuoteIcon sx={{ fontSize: "16px" }} />
                     </Typography>
                     <Box sx={{ display: "flex", justifyContent: "center", py: 1 }}>
                       <Rating value={testimonial?.rating} precision={0.5} readOnly />
