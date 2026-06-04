@@ -104,7 +104,7 @@ const GridView = ({ list = [], sliderValue }) => {
       ) : (
         <Grid container spacing={2}>
           {list.map((item) => (
-            <Grid item key={item.id} sm={calculateColumnPerRow(sliderValue)}>
+            <Grid item key={item.id} xs={12} sm={calculateColumnPerRow(sliderValue)}>
               <CardRoot sx={{ boxSizing: "border-box" }} elevation={6}>
                 <Box className="grid__card-top">
                   <IMG src={item?.images?.[0]} alt={item?.name} />
