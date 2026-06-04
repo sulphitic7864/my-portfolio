@@ -24,6 +24,11 @@ import { FlexBetween, FlexBox } from "../../components/FlexBox";
 import { Small } from "../../components/Typography";
 import MapMarkerIcon from "../../components/icons/MapMarkerIcon";
 import UsersReviews from "./UsersReviews";
+import {
+  AnimatedBorderButton,
+  ProgressiveBorderButton
+} from "../../components/AnimatedBorderButton";
+
 
 const ContentBox = styled("div")(({ theme }) => ({
   margin: "30px",
@@ -33,7 +38,7 @@ const ContentBox = styled("div")(({ theme }) => ({
 const Title = styled("span")(() => ({
   fontSize: "1rem",
   fontWeight: "500",
-  marginRight: ".5rem",
+  // marginRight: ".5rem",
   textTransform: "capitalize"
 }));
 
@@ -99,6 +104,7 @@ const Container = styled("div")(({ theme }) => ({
   }
 }));
 
+
 const About = () => {
   const theme = useTheme();
 
@@ -162,74 +168,85 @@ const About = () => {
               Waseem Qasim
             </Typography>
 
-            <FlexBetween maxWidth={500} flexWrap="wrap" margin="auto" mt={1}>
+            <FlexBetween maxWidth={700} flexWrap="wrap" margin="auto" mt={1}>
               <FlexBox alignItems="center" gap={1}>
                 {/* <Bratislava sx={{ color: "text.disabled" }} /> */}
-                <Small fontWeight={600} color="text.disabled">
+                <Title fontWeight={600} color="text.disabled">
                   Software Engineer | Project Manager | Fullstack | NodeJs | Sr. Frontend |
                   Typescript | Redux | Nextjs | Reactjs | Javascript | Material UI | Html & HTML5 |
                   CSS | Tailwind | CSS & CSS3 | SCSS | SQL | NoSql | MongoDB | DynamoDB | MySql |
                   Databases | GraphQL | CI/CD | GIT & Github | 6x Alibaba Cloud | AWS | Deployment
-                </Small>
+                </Title>
               </FlexBox>
 
               <FlexBox alignItems="center" gap={1}>
                 <MapMarkerIcon color="primary" />
-                <Small fontWeight={600} color="text.disabled">
+                <Small fontWeight={600} color="text.primary">
                   Islamabad, Pakistan
                 </Small>
               </FlexBox>
 
               <FlexBox alignItems="center" gap={1}>
                 <DateRange color="primary" />
-                <Small fontWeight={600} color="text.disabled">
+                <Small fontWeight={600} color="text.primary">
                   Joined March 17, 2019
                 </Small>
               </FlexBox>
             </FlexBetween>
 
-            <FlexBox justifyContent={"space-evenly"} marginTop={3} flexWrap="wrap">
+            <FlexBox
+              marginTop={3}
+              alignItems="center"
+              justifyContent="space-evenly"
+              gap={2}
+            // flexWrap="wrap"
+            >
+              {/* Progress Bar */}
               <Box
-                minWidth={250}
-                sx={{ [theme.breakpoints.down(600)]: { minWidth: "100%", mb: 2 } }}
+                sx={{
+                  flex: 1,
+                  minWidth: 250,
+                  maxWidth: 450
+                }}
               >
                 <Small mb={0.5}>Profile Impression</Small>
 
                 <FlexBox alignItems="center" gap={1}>
                   <LinearProgress
-                    value={90}
+                    value={95}
                     color="success"
                     variant="determinate"
-                    sx={{ flexGrow: 1 }}
+                    sx={{
+                      flexGrow: 1,
+                      height: 10,
+                      borderRadius: 10
+                    }}
                   />
-                  <Small fontWeight={600}>90%</Small>
+                  <Small fontWeight={600}>95%</Small>
                 </FlexBox>
               </Box>
 
-              <FlexBetween
-                width="100%"
-                maxWidth={100}
-                justifyContent={"flex-end"}
-                flexWrap="wrap"
-                sx={{
-                  [theme.breakpoints.down(600)]: { maxWidth: "100%" },
-                  [theme.breakpoints.down(400)]: {
-                    "& .MuiButtonBase-root": { width: "100%", mb: 1 }
-                  }
-                }}
+              {/* Buttons */}
+              <FlexBox
+                alignItems="center"
+                gap={2}
+                flexWrap="nowrap"
               >
-                {/* <Button variant="outlined">Follow</Button> */}
-                <Button variant="outlined">
-                  <Link to="/portfolio/contact_us" paddingLeft={1} variant="outlined">
-                    {/* <Icon>send</Icon> */}
-                    Hire Me
-                  </Link>
-                </Button>
+                <AnimatedBorderButton
+                  component={Link}
+                  to="https://res.cloudinary.com/df5qmzplg/image/upload/v1780587275/Waseem_Resume_4-6-26_tfzamo.pdf"
+                  target="_blank"
+                >
+                  Download Resume
+                </AnimatedBorderButton>
 
-                {/* <Button sx={{ padding: "0.6rem" }}>
-                  <MoreHoriz sx={{ color: "text.disabled" }} />
-                </Button> */}
-              </FlexBetween>
+                <ProgressiveBorderButton
+                  component={Link}
+                  to="/portfolio/contact_us"
+                >
+                  Hire Me
+                </ProgressiveBorderButton>
+              </FlexBox>
             </FlexBox>
           </Box>
         </ContentWrapper>
@@ -246,19 +263,17 @@ const About = () => {
                       About
                     </Typography>
                     <Typography
-                      variant="body1"
+                      className="font-italic"
                       sx={{
                         mb: 4,
                         pb: 2,
                         mbMd: 5,
                         pbMd: 0,
-                        textAlign: { xs: "justify", md: "center" }
+                        textAlign: { xs: "justify", md: "left", fontSize: 16 }
                       }}
                     >
-                      As a web developer focused on customer satisfaction, I manage all aspects of
-                      web development from concept to requirements definition, design, development,
-                      launch, maintenance and user support. I enjoy the client-facing role and
-                      working closely with team members to produce high-quality deliverables.
+                      As an experienced frontend engineer with over 6 years in software development, I have honed my skills in crafting seamless, high-performance web applications. My journey encompasses the entire software lifecycle, from product conceptualization and design to robust code deployment and post-launch feature implementation. I excel in optimizing performance and ensuring a user-centric approach, consistently delivering high-quality solutions that meet and exceed client expectations.
+
                     </Typography>
                   </Grid>
                 </div>
@@ -271,7 +286,7 @@ const About = () => {
                       <Typography marginTop={2} variant="h5">
                         Web Developer
                       </Typography>
-                      <Typography textAlign="justify" variant="body1" className="font-italic">
+                      <Typography textAlign="justify" className="font-italic" fontSize={16}>
                         Building a website is, in many ways, an exercise of willpower. It’s tempting
                         to get distracted by the bells and whistles of the design process, and
                         forget all about creating compelling content.
@@ -284,16 +299,21 @@ const About = () => {
                               <Icon color="primary">chevron_right</Icon>
                               <strong style={{ marginRight: "5px" }}>Website: </strong>
                               <Link
-                                href={`http://sulphitic.netlify.app`}
+                                href={`https://waseemqasim3737.netlify.app`}
                                 target="_blank"
-                                sx={{ color: "primary", m: 1 }}
+                                sx={{ color: "primary", m: 1, textdecoration: "underline" }}
                               >
-                                sulphitic.netlify.app
+                                waseemqasim3737.netlify.app
                               </Link>
                             </ListItem>
                             <ListItem>
                               <Icon color="primary">chevron_right</Icon>{" "}
                               <strong style={{ marginRight: "5px" }}>Phone: </strong> +923244929494
+                            </ListItem>
+                            <ListItem>
+                              <Icon color="primary">chevron_right</Icon>{" "}
+                              <strong style={{ marginRight: "5px" }}>Consultancy: </strong>
+                              Avaialable
                             </ListItem>
                             <ListItem>
                               <Icon color="primary">chevron_right</Icon>{" "}
@@ -326,7 +346,7 @@ const About = () => {
                           </List>
                         </Grid>
                       </Grid>
-                      <Typography variant="body1">
+                      <Typography className="font-italic" fontSize={16}>
                         Showing a balanced portfolio can ease the process of the client trusting you
                         as they can see how creative you can get but also how you can deliver
                         results that the client expects. Sometimes, things that are too flashy might
@@ -350,11 +370,11 @@ const About = () => {
               <Typography variant="h4" sx={{ mb: 4 }}>
                 Facts
               </Typography>
-              <Typography variant="body1" maxWidth="md" mx="auto">
-                “To give real service you must add something which cannot be bought or measured with
+              <Typography className="font-italic" fontSize={16} maxWidth="md" mx="auto">
+                To give real service you must add something which cannot be bought or measured with
                 money, and that is sincerity and integrity. We see our customers as invited guests
                 to a party, and we are the hosts. It’s our job every day to make every important
-                aspect of the customer a little bit better.”
+                aspect of the customer a little bit better.
               </Typography>
             </Box>
 

@@ -64,7 +64,7 @@ const UsersReviews = () => {
             </Typography>
           </Badge>
           <Typography
-            variant="body1"
+            className="font-italic" fontSize={16}
             sx={{ mb: 4, pb: 2, mbMd: 5, pbMd: 0, textAlign: { xs: "justify", md: "center" } }}
           >
             Over the years, I have received incredible reviews and feedback from clients worldwide,

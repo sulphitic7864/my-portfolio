@@ -33,11 +33,8 @@ h6 {
   font-family: "Raleway", sans-serif;
 }
 
-/* Removed hover rule that stretched product card to full width */
-
-/* PhotoSwipe: darker backdrop so underlying UI isn't visible */
-.pswp__bg {
-  background-color: rgba(0, 0, 0, 0.88) !important;
+.ProductCard:hover {
+  width: 70vw;
 }
 
 /*--------------------------------------------------------------
