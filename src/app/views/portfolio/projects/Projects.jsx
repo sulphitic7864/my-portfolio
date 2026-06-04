@@ -39,6 +39,7 @@ const Projects = () => {
       }));
       setLoading(false);
       setList(dataFromFirebase);
+      setOriginalList(dataFromFirebase);
       // showAlert("success", "Data fetch successfully.");
     } catch (error) {
       setLoading(false);

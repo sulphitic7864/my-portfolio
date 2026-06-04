@@ -128,7 +128,25 @@ const ProductViewer = (props) => {
             <Divider sx={{ mb: 2 }} />
           </Grid>
 
-          <Grid item md={12} xs={12} sx={{ order: { xs: 2, md: 2 } }}>
+          <Grid item md={12} xs={12} sx={{ order: { xs: 3, md: 2 }, textAlign: "justify" }}>
+            <H4
+              sx={{
+                ml: 0,
+                mb: 1,
+                fontSize: 16,
+                fontWeight: "bold",
+                color: secondary
+              }}
+            >
+              Description
+            </H4>
+            <Paragraph
+              style={{ fontSize: 13, textIndent: "2em" }}
+              dangerouslySetInnerHTML={{ __html: projectData?.description ?? "-" }}
+            ></Paragraph>
+          </Grid>
+
+          <Grid item md={12} xs={12} sx={{ order: { xs: 4, md: 3 } }}>
             <ProductCard className="ProductCard">
               {/* Only show thumbnails; clicking will open PhotoSwipe modal */}
               <Gallery>
@@ -160,24 +178,6 @@ const ProductViewer = (props) => {
                 </FlexAlignCenter>
               </Gallery>
             </ProductCard>
-          </Grid>
-
-          <Grid item md={12} xs={12} sx={{ textAlign: "justify" }}>
-            <H4
-              sx={{
-                ml: 0,
-                mb: 1,
-                fontSize: 16,
-                fontWeight: "bold",
-                color: secondary
-              }}
-            >
-              Description
-            </H4>
-            <Paragraph
-              style={{ fontSize: 13, textIndent: "2em" }}
-              dangerouslySetInnerHTML={{ __html: projectData?.description ?? "-" }}
-            ></Paragraph>
           </Grid>
         </Grid>
         <Divider sx={{ my: 2 }} />

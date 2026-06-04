@@ -28,7 +28,9 @@ const ListTopbar = ({
       {viewMode === "grid" ? (
         <TextField
           variant="standard"
+          placeholder="Search projects..."
           onChange={handleInputChange}
+          fullWidth
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -36,14 +38,24 @@ const ListTopbar = ({
               </InputAdornment>
             )
           }}
+          sx={{ width: { xs: "48%", md: 260 }, flex: { xs: "0 0 48%", md: "0 0 auto" } }}
         />
       ) : (
-        <span></span>
+        <span />
       )}
 
-      <FlexBox justifyContent="flex-end">
-        <Hidden xsDown>
-          {viewMode === "grid" && (
+      <FlexBox
+        justifyContent="flex-end"
+        sx={{
+          width: { xs: "48%", md: "auto" },
+          mt: { xs: 0, md: 0 },
+          gap: 1,
+          flexWrap: "wrap",
+          justifyContent: { xs: "flex-end", md: "flex-end" }
+        }}
+      >
+        {viewMode === "grid" && (
+          <Hidden smDown>
             <StyledSlider
               min={25}
               step={null}
@@ -52,23 +64,24 @@ const ListTopbar = ({
               onChange={handleSldierChange}
               aria-labelledby="continuous-slider"
             />
-          )}
-          <IconButton
-            size="large"
-            color={viewMode === "grid" ? "primary" : "default"}
-            onClick={() => handleViewChange("grid")}
-          >
-            <Icon>view_comfy</Icon>
-          </IconButton>
+          </Hidden>
+        )}
 
-          <IconButton
-            size="large"
-            color={viewMode === "list" ? "primary" : "default"}
-            onClick={() => handleViewChange("list")}
-          >
-            <Icon>list</Icon>
-          </IconButton>
-        </Hidden>
+        <IconButton
+          size="large"
+          color={viewMode === "grid" ? "primary" : "default"}
+          onClick={() => handleViewChange("grid")}
+        >
+          <Icon>view_comfy</Icon>
+        </IconButton>
+
+        <IconButton
+          size="large"
+          color={viewMode === "list" ? "primary" : "default"}
+          onClick={() => handleViewChange("list")}
+        >
+          <Icon>list</Icon>
+        </IconButton>
       </FlexBox>
     </FlexBetween>
   );
