@@ -23,7 +23,8 @@ const ProductCard = styled(Card)({
   display: "flex",
   alignItems: "center",
   flexDirection: "column",
-  justifyContent: "center"
+  justifyContent: "center",
+  // overflowX: "scroll"
 });
 
 const IMG = styled("img")({
@@ -179,33 +180,31 @@ const ProductViewer = (props) => {
           <Grid item md={12} xs={12} sx={{ order: { xs: 4, md: 3 } }}>
             <ProductCard className="ProductCard">
               {/* Only show thumbnails; clicking will open PhotoSwipe modal */}
-              <ProductCard>
-                <FlexAlignCenter
-                  ref={viewerRef}
-                  className="border"
-                  sx={{
-                    width: "100%",
-                    gap: 1,
-                    py: 2
-                  }}
-                >
-                  {projectData?.images?.map((imgUrl, idx) => (
-                    <img
-                      key={`img-${projectData?.id}-${idx}`}
-                      src={imgUrl}
-                      alt={projectData?.name}
-                      style={{
-                        width: 140,
-                        height: 100,
-                        objectFit: "cover",
-                        borderRadius: 8,
-                        cursor: "pointer",
-                        marginRight: 8
-                      }}
-                    />
-                  ))}
-                </FlexAlignCenter>
-              </ProductCard>
+              <FlexAlignCenter
+                ref={viewerRef}
+                className="border"
+                sx={{
+                  width: "100%",
+                  gap: 1,
+                  py: 2
+                }}
+              >
+                {projectData?.images?.map((imgUrl, idx) => (
+                  <img
+                    key={`img-${projectData?.id}-${idx}`}
+                    src={imgUrl}
+                    alt={projectData?.name}
+                    style={{
+                      width: 140,
+                      height: 100,
+                      objectFit: "cover",
+                      borderRadius: 8,
+                      cursor: "pointer",
+                      marginRight: 8
+                    }}
+                  />
+                ))}
+              </FlexAlignCenter>
             </ProductCard>
           </Grid>
         </Grid>
