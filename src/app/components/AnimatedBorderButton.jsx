@@ -9,8 +9,8 @@ import { Button as MuiButton } from "@mui/material";
 const GradientButtonRoot = styled(MuiButton)(({ theme }) => ({
     position: "relative",
     overflow: "hidden",
-    borderRadius: 12,
-    padding: "10px 24px",
+    borderRadius: 5,
+    // padding: "10px 24px",
     fontWeight: 600,
 
     "&::before": {
@@ -80,8 +80,9 @@ export const AnimatedBorderButton = ({
 const ProgressiveButtonRoot = styled(MuiButton)(({ theme }) => ({
     position: "relative",
     overflow: "hidden",
-    borderRadius: 14,
-    padding: "10px 24px",
+    borderRadius: 5,
+    // padding: "10px 24px",
+    fontSize: 12,
     fontWeight: 600,
 
     border: "1px solid rgba(255,255,255,0.12)",
@@ -89,10 +90,8 @@ const ProgressiveButtonRoot = styled(MuiButton)(({ theme }) => ({
     "&::before": {
         content: '""',
         position: "absolute",
-
         width: "80px",
         height: "80px",
-
         background: `radial-gradient(
       circle,
       ${theme.palette.primary.main} 0%,

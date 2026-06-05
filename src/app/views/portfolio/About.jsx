@@ -199,7 +199,12 @@ const About = () => {
               alignItems="center"
               justifyContent="space-evenly"
               gap={2}
-            // flexWrap="wrap"
+              sx={{
+                flexDirection: {
+                  xs: "column", // mobile
+                  md: "row"     // desktop
+                }
+              }}
             >
               {/* Progress Bar */}
               <Box
