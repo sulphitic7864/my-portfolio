@@ -1,9 +1,9 @@
 import { Card, Divider, Box, Link, Grid, Icon, styled, useTheme, Button } from "@mui/material";
 import { H4, H5, Paragraph, Span } from "../../../components/Typography";
 import { removeTimeFromDate } from "../../../utils/utils";
-import { useEffect, useState } from "react";
-import { Gallery, Item } from "react-photoswipe-gallery";
-import "photoswipe/style.css";
+import { useEffect, useState, useRef } from "react";
+import Viewer from "viewerjs";
+import "viewerjs/dist/viewer.css";
 
 // styled components
 const Container = styled("div")(({ theme }) => ({
@@ -49,6 +49,36 @@ const ThumbImg = styled("img")({
 
 const ProductViewer = (props) => {
   const projectData = props.data;
+  const viewerRef = useRef(null);
+
+  useEffect(() => {
+    if (!viewerRef.current) return;
+
+    const viewer = new Viewer(viewerRef.current, {
+      navbar: true,
+      toolbar: {
+        zoomIn: true,
+        zoomOut: true,
+        oneToOne: true,
+        reset: true,
+        prev: true,
+        play: true,
+        next: true,
+        rotateLeft: true,
+        rotateRight: true,
+        flipHorizontal: true,
+        flipVertical: true
+      },
+      fullscreen: true,
+      movable: true,
+      zoomable: true,
+      rotatable: true,
+      scalable: true,
+      transition: true
+    });
+
+    return () => viewer.destroy();
+  }, [projectData?.images]);
 
   const theme = useTheme();
 
@@ -59,7 +89,7 @@ const ProductViewer = (props) => {
     <Container>
       <Card sx={{ px: 4, pb: 2, pt: 4 }} elevation={3}>
         <Grid container spacing={3}>
-          
+
           <Grid item md={12} xs={12} sx={{ order: { xs: 1, md: 1 } }}>
             <H4 sx={{ mt: 0, color: secondary, fontWeight: 700 }}>{projectData?.name}</H4>
             <Paragraph sx={{ mt: 0, mb: 2, color: secondary, fontSize: 12 }}>
@@ -149,34 +179,33 @@ const ProductViewer = (props) => {
           <Grid item md={12} xs={12} sx={{ order: { xs: 4, md: 3 } }}>
             <ProductCard className="ProductCard">
               {/* Only show thumbnails; clicking will open PhotoSwipe modal */}
-              <Gallery>
+              <ProductCard>
                 <FlexAlignCenter
+                  ref={viewerRef}
                   className="border"
-                  style={{ width: "-webkit-fill-available" }}
-                  gap={2}
-                  py={2}
+                  sx={{
+                    width: "100%",
+                    gap: 1,
+                    py: 2
+                  }}
                 >
                   {projectData?.images?.map((imgUrl, idx) => (
-                    <Item
-                      key={`thumb-${projectData?.id}-${idx}`}
-                      original={imgUrl}
-                      thumbnail={imgUrl}
-                      width="1200"
-                      height="900"
-                      title={projectData?.name}
-                    >
-                      {({ ref, open }) => (
-                        <ThumbImg
-                          ref={ref}
-                          src={imgUrl}
-                          alt={imgUrl}
-                          onClick={() => open()}
-                        />
-                      )}
-                    </Item>
+                    <img
+                      key={`img-${projectData?.id}-${idx}`}
+                      src={imgUrl}
+                      alt={projectData?.name}
+                      style={{
+                        width: 140,
+                        height: 100,
+                        objectFit: "cover",
+                        borderRadius: 8,
+                        cursor: "pointer",
+                        marginRight: 8
+                      }}
+                    />
                   ))}
                 </FlexAlignCenter>
-              </Gallery>
+              </ProductCard>
             </ProductCard>
           </Grid>
         </Grid>

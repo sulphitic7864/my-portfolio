@@ -3,10 +3,10 @@ import { AddToCartButton, Breadcrumb } from "../../../../components";
 import { H4, H5, Paragraph, Span } from "../../../../components/Typography";
 import { removeTimeFromDate } from "../../../../utils/utils";
 import { useState } from "react";
-import { Gallery, Item } from "react-photoswipe-gallery";
-import "photoswipe/style.css";
 import { FlexBetween } from "../../../../components/FlexBox";
-import { capitalize } from "lodash";
+import { useRef, useEffect } from "react";
+import Viewer from "viewerjs";
+import "viewerjs/dist/viewer.css";
 
 // styled components
 const Container = styled("div")(({ theme }) => ({
@@ -50,11 +50,41 @@ const ThumbImg = styled("img")({
 
 const ProductViewer = (props) => {
   const projectData = props.data;
+  const viewerRef = useRef(null);
 
   const theme = useTheme();
 
   const primary = theme.palette.primary.main;
   const secondary = theme.palette.text.secondary;
+
+  useEffect(() => {
+    if (!viewerRef.current) return;
+
+    const viewer = new Viewer(viewerRef.current, {
+      navbar: true,
+      toolbar: {
+        zoomIn: true,
+        zoomOut: true,
+        oneToOne: true,
+        reset: true,
+        prev: true,
+        play: true,
+        next: true,
+        rotateLeft: true,
+        rotateRight: true,
+        flipHorizontal: true,
+        flipVertical: true
+      },
+      fullscreen: true,
+      movable: true,
+      zoomable: true,
+      rotatable: true,
+      scalable: true,
+      transition: true
+    });
+
+    return () => viewer.destroy();
+  }, [projectData?.images]);
 
   return (
     <Container>
@@ -133,30 +163,31 @@ const ProductViewer = (props) => {
           <Grid item md={12} xs={12} sx={{ order: { xs: 2, md: 2 } }}>
             <H4 sx={{ mt: 0, color: primary, fontWeight: 700 }}>Project Images</H4>
             <ProductCard>
-              {/* thumbnails only; open PhotoSwipe modal on click */}
-              <Gallery>
-                <FlexAlignCenter
-                  className="border"
-                  style={{ width: "-webkit-fill-available" }}
-                  gap={1}
-                  py={2}
-                >
-                  {projectData?.images?.map((imgUrl, idx) => (
-                    <Item
-                      key={`thumb-mgmt-${projectData?.id}-${idx}`}
-                      original={imgUrl}
-                      thumbnail={imgUrl}
-                      width="1200"
-                      height="900"
-                      title={projectData?.name}
-                    >
-                      {({ ref, open }) => (
-                        <ThumbImg ref={ref} src={imgUrl} alt={projectData?.name} onClick={() => open()} />
-                      )}
-                    </Item>
-                  ))}
-                </FlexAlignCenter>
-              </Gallery>
+              <FlexAlignCenter
+                ref={viewerRef}
+                className="border"
+                sx={{
+                  width: "100%",
+                  gap: 1,
+                  py: 2
+                }}
+              >
+                {projectData?.images?.map((imgUrl, idx) => (
+                  <img
+                    key={`img-${projectData?.id}-${idx}`}
+                    src={imgUrl}
+                    alt={projectData?.name}
+                    style={{
+                      width: 140,
+                      height: 100,
+                      objectFit: "cover",
+                      borderRadius: 8,
+                      cursor: "pointer",
+                      marginRight: 8
+                    }}
+                  />
+                ))}
+              </FlexAlignCenter>
             </ProductCard>
           </Grid>
 

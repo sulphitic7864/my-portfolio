@@ -288,6 +288,45 @@ export const getYearsFromTimestamp = (timestamps) => {
   return `${years}.${months}`;
 }
 
+export const getProjectDuration = (timestamps) => {
+  if (!timestamps?.[0] || !timestamps?.[1]) return "-";
+
+  const startDate = new Date(timestamps[0]);
+  const endDate = new Date(timestamps[1]);
+
+  const diffTime = endDate - startDate;
+
+  // Total days
+  const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  // Less than a month
+  if (totalDays < 30) {
+    return `${totalDays} Day${totalDays !== 1 ? "s" : ""}`;
+  }
+
+  // Total months
+  const totalMonths =
+    (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+    (endDate.getMonth() - startDate.getMonth());
+
+  // Less than a year
+  if (totalMonths < 12) {
+    return `${totalMonths} Month${totalMonths !== 1 ? "s" : ""}`;
+  }
+
+  // Years + Months
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+
+  if (months === 0) {
+    return `${years} Year${years !== 1 ? "s" : ""}`;
+  }
+
+  return `${years} Year${years !== 1 ? "s" : ""} ${months} Month${
+    months !== 1 ? "s" : ""
+  }`;
+};
+
 export const color = (name) => {
 
   const colors = {

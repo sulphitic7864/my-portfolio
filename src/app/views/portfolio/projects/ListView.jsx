@@ -12,7 +12,7 @@ import {
   Link
 } from "@mui/material";
 import DataTable from "react-data-table-component";
-import { getYearsFromTimestamp, removeTimeFromDate } from "../../../utils/utils";
+import { getYearsFromTimestamp, getProjectDuration, removeTimeFromDate } from "../../../utils/utils";
 import ProjectViewer from "./ProjectViewer";
 
 // styled components
@@ -212,7 +212,7 @@ const ListView = ({ list = [] }) => {
       cell: (row) => (
         <div className="d-flex justify-content-left align-items-center ">
           <div className="d-flex flex-column">
-            {row?.project_duration ? `${getYearsFromTimestamp(row?.project_duration)} Years` : "-"}
+            {row?.project_duration ? `${getProjectDuration(row?.project_duration)} Years` : "-"}
           </div>
         </div>
       )

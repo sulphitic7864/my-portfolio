@@ -12,7 +12,7 @@ import {
 import { Breadcrumb } from "../../../../components";
 import DataTable from "react-data-table-component";
 import ConfirmationDialog from "../../../../components/ConfirmationDialog";
-import { color, getYearsFromTimestamp, removeTimeFromDate } from "../../../../utils/utils";
+import { color, getYearsFromTimestamp, getProjectDuration, removeTimeFromDate } from "../../../../utils/utils";
 // import '@styles/react/libs/tables/react-dataTable-component.scss';
 import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc } from "firebase/firestore";
 import { MatxLoading } from "../../../../components";
@@ -313,7 +313,7 @@ const Projects = () => {
       cell: (row) => (
         <div className="d-flex justify-content-left align-items-center ">
           <div className="d-flex flex-column">
-            {row?.project_duration ? `${getYearsFromTimestamp(row?.project_duration)} Years` : "-"}
+            {row?.project_duration ? `${getProjectDuration(row?.project_duration)}` : "-"}
           </div>
         </div>
       )
@@ -401,7 +401,7 @@ const Projects = () => {
     );
   };
 
-  const handleSelectAllRows = (event) => {};
+  const handleSelectAllRows = (event) => { };
 
   if (users) {
     var filteredData = users.filter((item) => {
