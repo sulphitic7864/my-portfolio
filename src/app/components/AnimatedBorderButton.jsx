@@ -82,7 +82,7 @@ const ProgressiveButtonRoot = styled(MuiButton)(({ theme }) => ({
     overflow: "hidden",
     borderRadius: 5,
     // padding: "10px 24px",
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: 600,
 
     border: "1px solid rgba(255,255,255,0.12)",
