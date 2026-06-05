@@ -127,24 +127,33 @@ const ProjectForm = (props) => {
 
   const updateProject = async (values) => {
     setLoading(true);
+
     try {
       const downloadURLs = acceptedFiles?.length
         ? await uploadFilesToLocalServer(acceptedFiles, "projects")
         : [];
 
       const projectRef = doc(fireStore, "projects", formData.id);
+
       await updateDoc(projectRef, {
         ...values,
-        images: downloadURLs.length ? downloadURLs : values.images
+        images: [
+          ...(values.images || []),
+          ...downloadURLs
+        ]
       });
+
       setLoading(false);
+
       showAlert("success", "Project data updated successfully!");
+
       props.fetchData();
       props.back();
+
     } catch (error) {
       setLoading(false);
       showAlert("error", "Error while updating project data!");
-      console.error("Error uploading images:", error);
+      console.error(error);
     }
   };
 
@@ -282,9 +291,9 @@ const ProjectForm = (props) => {
                     variant="outlined"
                     onChange={handleChange}
                     value={values.client || ""}
-                    // onBlur={handleBlur}
-                    // error={Boolean(touched.client && errors.client)}
-                    // helperText={touched.client && errors.client}
+                  // onBlur={handleBlur}
+                  // error={Boolean(touched.client && errors.client)}
+                  // helperText={touched.client && errors.client}
                   />
 
                   <StyledTextField
@@ -296,9 +305,9 @@ const ProjectForm = (props) => {
                     variant="outlined"
                     onChange={handleChange}
                     value={values.client_region || ""}
-                    // onBlur={handleBlur}
-                    // error={Boolean(touched.client_region && errors.client_region)}
-                    // helperText={touched.client_region && errors.client_region}
+                  // onBlur={handleBlur}
+                  // error={Boolean(touched.client_region && errors.client_region)}
+                  // helperText={touched.client_region && errors.client_region}
                   />
 
                   <StyledTextField
@@ -324,9 +333,9 @@ const ProjectForm = (props) => {
                     variant="outlined"
                     onChange={handleChange}
                     value={values.client_phone || ""}
-                    // onBlur={handleBlur}
-                    // error={Boolean(touched.client_phone && errors.client_phone)}
-                    // helperText={touched.client_phone && errors.client_phone}
+                  // onBlur={handleBlur}
+                  // error={Boolean(touched.client_phone && errors.client_phone)}
+                  // helperText={touched.client_phone && errors.client_phone}
                   />
 
                   <StyledTextField
