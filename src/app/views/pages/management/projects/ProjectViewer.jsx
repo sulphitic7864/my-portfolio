@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Gallery, Item } from "react-photoswipe-gallery";
 import "photoswipe/style.css";
 import { FlexBetween } from "../../../../components/FlexBox";
+import { capitalize } from "lodash";
 
 // styled components
 const Container = styled("div")(({ theme }) => ({
@@ -60,9 +61,9 @@ const ProductViewer = (props) => {
       {console.log("projectData", projectData)}
       <Card sx={{ px: 4, pb: 2, pt: 4 }} elevation={3}>
         <Grid container spacing={3}>
-          
+
           <Grid item md={12} xs={12} sx={{ order: { xs: 1, md: 1 } }}>
-            <H4 sx={{ mt: 0, color: secondary, fontWeight: 700 }}>{projectData?.name}</H4>
+            <H4 sx={{ mt: 0, color: primary, fontWeight: 700, textTransform: 'capitalize' }}>{projectData?.name}</H4>
             <Paragraph sx={{ mt: 0, mb: 2, color: secondary, fontSize: 12 }}>
               {removeTimeFromDate(projectData?.project_duration[0] ?? "-")} ||{" "}
               {removeTimeFromDate(projectData?.project_duration[1] ?? "-")}
@@ -130,7 +131,7 @@ const ProductViewer = (props) => {
           </Grid>
 
           <Grid item md={12} xs={12} sx={{ order: { xs: 2, md: 2 } }}>
-            <H4 sx={{ mt: 0, color: secondary, fontWeight: 700 }}>Project Images</H4>
+            <H4 sx={{ mt: 0, color: primary, fontWeight: 700 }}>Project Images</H4>
             <ProductCard>
               {/* thumbnails only; open PhotoSwipe modal on click */}
               <Gallery>
@@ -161,11 +162,11 @@ const ProductViewer = (props) => {
 
 
           <Grid item md={12} xs={12} sx={{ order: { xs: 3, md: 3 } }}>
-            <H4 sx={{ ml: 0, mb: 1, fontSize: 16, fontWeight: "bold", color: secondary }}>
+            <H4 sx={{ ml: 0, mb: 1, fontSize: 16, fontWeight: "bold", color: primary }}>
               Description
             </H4>
             <Paragraph
-              style={{ fontSize: 13, textIndent: "2em" }}
+              style={{ fontSize: 15, textIndent: "2em" }}
               dangerouslySetInnerHTML={{ __html: projectData?.description ?? "-" }}
             ></Paragraph>
           </Grid>
@@ -177,7 +178,7 @@ const ProductViewer = (props) => {
             color="primary"
             variant="contained"
             size="small"
-            sx={{ flex: { xs: "0 0 48%", md: "0 0 auto" }, px: { xs: 2, md: 6 }, py: { xs: 0.75, md: 1.5 } }}
+            sx={{ flex: { xs: "0 0 48%", md: "0 0 auto" }, px: { xs: 1, md: 6 }, py: { xs: 0.75, md: 1.5 } }}
             onClick={() => props.back()}
           >
             Back
@@ -188,7 +189,7 @@ const ProductViewer = (props) => {
             color="success"
             variant="contained"
             size="small"
-            sx={{ flex: { xs: "0 0 48%", md: "0 0 auto" }, px: { xs: 2, md: 6 }, py: { xs: 0.75, md: 1.5 } }}
+            sx={{ flex: { xs: "0 0 48%", md: "0 0 auto" }, px: { xs: 1, md: 6 }, py: { xs: 0.75, md: 1.5 } }}
             onClick={() => props.updateProjectHandler(projectData)}
           >
             Edit
