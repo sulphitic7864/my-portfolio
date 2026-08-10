@@ -18,10 +18,16 @@ const Container = styled("div")(({ theme }) => ({
 const Projects = () => {
   const [list, setList] = useState([]);
   const [originalList, setOriginalList] = useState([]);
-  const [sliderValue, setSliderValue] = useState(50);
+  const [sliderValue, setSliderValue] = useState(75);
   const [viewMode, setViewMode] = useState("grid");
   const [loading, setLoading] = useState(false);
   const { showAlert } = useAlert();
+
+  const normalizeProjectList = (items = []) =>
+    items.map((item) => ({
+      ...item,
+      technology: typeof item?.technology === "string" ? item.technology : ""
+    }));
 
   useEffect(() => {
     fetchData(); // Fetch data when the component mounts
@@ -33,10 +39,12 @@ const Projects = () => {
       const response = await getDocs(
         query(collection(fireStore, "projects"), where("status", "==", "active"))
       );
-      const dataFromFirebase = response?.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      const dataFromFirebase = normalizeProjectList(
+        response?.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+      );
       setLoading(false);
       setList(dataFromFirebase);
       setOriginalList(dataFromFirebase);
@@ -71,13 +79,14 @@ const Projects = () => {
   return (
     <Container className="list">
       {loading && <MatxLoading />}
-      <Box mb={2}>
+      <Box mb={5}>
         <ListTopbar
           viewMode={viewMode}
           handleViewChange={handleViewChange}
           handleInputChange={handleInputChange}
           handleSldierChange={handleSldierChange}
           sliderValue={sliderValue}
+          list={list}
         ></ListTopbar>
       </Box>
 

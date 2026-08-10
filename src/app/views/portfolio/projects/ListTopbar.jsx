@@ -19,7 +19,8 @@ const ListTopbar = ({
   sliderValue,
   handleSldierChange,
   handleInputChange,
-  handleViewChange
+  handleViewChange,
+  list
 }) => {
   let marks = [{ value: 25 }, { value: 50 }, { value: 75 }, { value: 100 }];
 
@@ -44,7 +45,7 @@ const ListTopbar = ({
         <span />
       )}
 
-      <FlexBox
+      {/* <FlexBox
         justifyContent="flex-end"
         sx={{
           width: { xs: "48%", md: "auto" },
@@ -82,7 +83,8 @@ const ListTopbar = ({
         >
           <Icon>list</Icon>
         </IconButton>
-      </FlexBox>
+      </FlexBox> */}
+      <span>Total Projects: {list.length}</span>
     </FlexBetween>
   );
 };
