@@ -126,8 +126,8 @@ const ProductViewer = (props) => {
 
             <Divider sx={{ mb: 2 }} />
 
-            <Paragraph sx={{ mt: 0, mb: 1, color: secondary, fontWeight: "700" }}>
-              Have questions about this project (Client Info)
+            <Paragraph sx={{ mt: 0, mb: 1, color: primary, fontWeight: "700" }}>
+              Client Info
             </Paragraph>
 
             <CallBox flexWrap="wrap" sx={{ display: "flex", justifyContent: "space-around" }}>

@@ -2,7 +2,7 @@ import {
   Box,
   Button,
   Card,
-  Checkbox,
+  Chip,
   Grid,
   Icon,
   Link,
@@ -10,12 +10,12 @@ import {
   styled,
   useTheme
 } from "@mui/material";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FlexAlignCenter, FlexBetween, FlexBox } from "../../../components/FlexBox";
 import { Paragraph, Small } from "../../../components/Typography";
 import { removeTimeFromDate } from "../../../utils/utils";
 import ProjectViewer from "./ProjectViewer";
-// styled components
+
 const StyledIcon = styled(Icon)({
   color: "#fff",
   cursor: "pointer",
@@ -24,70 +24,59 @@ const StyledIcon = styled(Icon)({
 
 const IMG = styled("img")({
   width: "100%",
-  minHeight: "150px",
-  maxHeight: "200px",
+  height: "220px",
+  objectFit: "cover",
   display: "block",
-  boxSizing: "content-box",
-  cursor: "pointer"
+  cursor: "pointer",
+  backgroundColor: "#f3f5f9",
+  padding: "0px",
+  borderRadius: "8px 8px 0px 0px"
 });
 
 const CardRoot = styled(Card)(({ theme }) => ({
   height: "100%",
   display: "flex",
   flexDirection: "column",
-  "& .grid__card-overlay": {
-    display: "flex",
-    flexDirection: "column",
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 2,
-    opacity: 0,
-    transition: "all 250ms ease-in-out",
-    background: "rgba(0, 0, 0, 0.67)",
-    "& > div:nth-of-type(2)": {
-      position: "absolute",
-      top: 0,
-      bottom: 0,
-      right: 0,
-      left: 0,
-      zIndex: -1
-    }
-  },
+  overflow: "hidden",
+  borderRadius: 14,
+  border: "1px solid rgba(0, 0, 0, 0.04)",
+  background: "#fff",
   "& .grid__card-top": {
-    textAlign: "center",
-    position: "relative"
+    position: "relative",
+    overflow: "hidden"
   },
   "& .grid__card-bottom": {
-    textAlign: "center",
-    "& .email": { display: "none" }
+    padding: "16px 16px 18px",
+    textAlign: "left"
   },
   "&:hover": {
-    "& .grid__card-overlay": { opacity: 1 },
-    "& .grid__card-bottom": {
-      "& small": {
-        // display: "none",
-        color: theme.palette.text.secondary
-      }
-    }
+    boxShadow: "0 18px 40px rgba(15, 23, 42, 0.12)"
   }
 }));
 
+const parseSkills = (value = "") =>
+  typeof value === "string"
+    ? value
+      .split(",")
+      .map((skill) => skill.trim())
+      .filter(Boolean)
+    : [];
+
 const calculateColumnPerRow = (value) => {
-  if (value === 25) return 2;
-  if (value === 50) return 3;
-  if (value === 75) return 4;
-  if (value === 100) return 6;
+  if (value <= 25) return 2;
+  if (value <= 50) return 3;
+  if (value <= 75) return 4;
+  return 6;
 };
 
-const GridView = ({ list = [], sliderValue }) => {
+const GridView = ({ list = [], sliderValue = 50 }) => {
   const [view, setView] = useState("");
   const [currentProject, setCurrentProject] = useState(null);
   const theme = useTheme();
   const primary = theme.palette.primary.main;
   const secondary = theme.palette.text.secondary;
+
+  const safeList = useMemo(() => list || [], [list]);
 
   const viewProjectHandler = async (data) => {
     setView("ProjectViewer");
@@ -97,70 +86,130 @@ const GridView = ({ list = [], sliderValue }) => {
   const back = () => {
     setView("");
   };
+
   return (
     <div>
-      {view == "ProjectViewer" ? (
+      {view === "ProjectViewer" ? (
         <ProjectViewer back={back} data={currentProject} />
       ) : (
-        <Grid container spacing={2}>
-          {list.map((item) => (
-            <Grid item key={item.id} xs={12} sm={calculateColumnPerRow(sliderValue)}>
-              <CardRoot sx={{ boxSizing: "border-box" }} elevation={6}>
-                <Box className="grid__card-top">
-                  <IMG src={item?.images?.[0]} alt={item?.name} />
+        <Grid container spacing={2.5}>
+          {safeList.map((item) => {
+            const projectSkills = parseSkills(item?.technology);
+            const projectDateRange = item?.project_duration || [];
+            const hasLiveUrl = Boolean(item?.live_url);
 
-                  <Box className="grid__card-overlay">
-                    <FlexBetween>
-                      <Checkbox sx={{ color: "#fff" }}></Checkbox>
+            return (
+              <Grid item key={item.id} xs={12} sm={calculateColumnPerRow(sliderValue)}>
+                <CardRoot elevation={0}>
+                  <Box className="grid__card-top">
+                    <IMG
+                      src={item?.images?.[0] || "https://via.placeholder.com/800x500?text=Project+Preview"}
+                      alt={item?.name || "Project preview"}
+                    />
 
-                      <FlexBox alignItems="center">
-                        <Tooltip
-                          sx={{ bgcolor: "primary" }}
-                          placement="top-start"
-                          title="Live Link"
-                          arrow
-                        >
-                          <Link
-                            href={
-                              item?.live_url.startsWith("http")
-                                ? item?.live_url
-                                : `http://${item?.live_url}`
-                            }
-                            target="_blank"
-                            sx={{ color: primary }}
-                          >
-                            <StyledIcon fontSize="small">link</StyledIcon>
-                          </Link>
-                        </Tooltip>
-                        {/* <StyledIcon fontSize="small">share</StyledIcon>
-                        <StyledIcon fontSize="small">edit</StyledIcon>
-                        <StyledIcon fontSize="small">delete</StyledIcon> */}
-                      </FlexBox>
-                    </FlexBetween>
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        inset: 0,
+                        background: "linear-gradient(180deg, rgba(15,23,42,0.06), rgba(15,23,42,0.18))",
+                        opacity: 0,
+                        transition: "opacity 0.25s ease",
+                        "&:hover": { opacity: 1 },
+                        pointerEvents: "none"
+                      }}
+                    />
+                  </Box>
 
-                    <FlexAlignCenter>
+                  <Box className="grid__card-bottom">
+                    <Paragraph sx={{ color: secondary, fontWeight: 700, fontSize: 18, mb: 0.5 }}>
+                      {item?.name || "Untitled Project"}
+                    </Paragraph>
+
+                    <Small sx={{ display: "block", color: "text.secondary", mb: 1.5 }}>
+                      {removeTimeFromDate(projectDateRange[0] ?? "-")} —{" "}
+                      {removeTimeFromDate(projectDateRange[1] ?? "-")}
+                    </Small>
+
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 1.5 }}>
+                      {projectSkills.length ? (
+                        projectSkills.map((skill) => (
+                          <Chip
+                            key={`${item.id}-${skill}`}
+                            label={skill}
+                            size="small"
+                            sx={{
+                              borderRadius: "999px",
+                              backgroundColor: "rgba(98, 0, 238, 0.08)",
+                              color: primary,
+                              fontWeight: 600,
+                              fontSize: 11,
+                              height: 26
+                            }}
+                          />
+                        ))
+                      ) : (
+                        <Chip
+                          label="Project"
+                          size="small"
+                          sx={{
+                            borderRadius: "999px",
+                            backgroundColor: "rgba(15, 23, 42, 0.06)",
+                            color: secondary,
+                            fontWeight: 600,
+                            fontSize: 11,
+                            height: 26
+                          }}
+                        />
+                      )}
+                    </Box>
+
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <Button
                         onClick={() => viewProjectHandler(item)}
-                        variant="outlined"
-                        sx={{ color: "#fff", borderColor: "#fff" }}
+                        variant="contained"
+                        size="small"
+                        sx={{
+                          borderRadius: 2,
+                          fontWeight: 600,
+                          textTransform: "none",
+                          boxShadow: "none",
+                          px: 1.75,
+                          py: 0.8
+                        }}
                       >
                         View Details
                       </Button>
-                    </FlexAlignCenter>
-                  </Box>
-                </Box>
 
-                <Box py={1} className="grid__card-bottom">
-                  <Paragraph sx={{ color: secondary, fontWeight: "700" }}>{item?.name}</Paragraph>
-                  <Small sx={{ display: "none" }}>{item?.date}</Small>
-                  <Small sx={{ display: "block" }}>
-                    {removeTimeFromDate(item?.project_duration[0] ?? "-")} |{" "}
-                    {removeTimeFromDate(item?.project_duration[1] ?? "-")}
-                  </Small>
-                </Box>
-              </CardRoot>
-            </Grid>
-          ))}
+                      {hasLiveUrl && (
+                        <Tooltip placement="top" title="Open live project" arrow>
+                          <Link
+                            href={
+                              item?.live_url?.startsWith("http")
+                                ? item.live_url
+                                : `https://${item.live_url}`
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            sx={{
+                              color: primary,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 0.5,
+                              fontWeight: 600,
+                              textDecoration: "none"
+                            }}
+                          >
+                            <StyledIcon fontSize="small">open_in_new</StyledIcon>
+                            Live
+                          </Link>
+                        </Tooltip>
+                      )}
+                    </Box>
+                  </Box>
+                </CardRoot>
+              </Grid>
+            );
+          })}
         </Grid>
       )}
     </div>

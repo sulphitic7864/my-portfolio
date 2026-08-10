@@ -169,7 +169,7 @@ const Projects = () => {
       cell: (row) => (
         <div className="d-flex justify-content-left align-items-center ">
           <FlexBox gap={1}>
-            <IMG src={row?.images} alt="No Image" />
+            <IMG src={row?.images[0]} alt="No Image" />
           </FlexBox>
         </div>
       )
